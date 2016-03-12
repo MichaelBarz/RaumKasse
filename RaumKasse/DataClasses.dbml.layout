@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="DataClasses">
+  <DataContextMoniker Name="/DataClassesDataContext" />
+  <nestedChildShapes>
+    <classShape Id="65d6bcd4-4099-428f-ab90-950d8a0b4b20" absoluteBounds="3.125, 0.5, 2, 1.9631982421875">
+      <DataClassMoniker Name="/DataClassesDataContext/User" />
+      <nestedChildShapes>
+        <elementListCompartment Id="011be912-de49-467f-a9c2-9e98c4b2e5eb" absoluteBounds="3.14, 0.96, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="c8f63c0e-fbb8-49a7-a6fa-73a17bf10803" absoluteBounds="5.25, 0.5, 2, 1.7708968098958327">
+      <DataClassMoniker Name="/DataClassesDataContext/Drink" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ce5fa8be-7312-4895-bb35-4ff07f2437dc" absoluteBounds="5.265, 0.96, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="14670f01-b650-4a79-b572-4bd08d00887d" absoluteBounds="5.5, 3, 2, 1.7708968098958327">
+      <DataClassMoniker Name="/DataClassesDataContext/userActionBuy" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a66d3c87-3348-47c6-bcf6-7d15fd2a7285" absoluteBounds="5.515, 3.46, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="eae554e0-fbbc-4f7c-af21-5e582ee5f21f" absoluteBounds="3, 3, 2, 1.7708968098958327">
+      <DataClassMoniker Name="/DataClassesDataContext/userActionPay" />
+      <nestedChildShapes>
+        <elementListCompartment Id="bc5124d4-3b28-4911-91f0-85a1d5c4ce9f" absoluteBounds="3.015, 3.46, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(4.0625 : 2.4631982421875); (4.0625 : 3)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/DataClassesDataContext/User/User_userActionPay" />
+      <nodes>
+        <classShapeMoniker Id="65d6bcd4-4099-428f-ab90-950d8a0b4b20" />
+        <classShapeMoniker Id="eae554e0-fbbc-4f7c-af21-5e582ee5f21f" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.64180643104672 : 2.4631982421875); (4.64180643104672 : 2.7); (5.95443747029303 : 2.7); (5.95443747029303 : 3)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/DataClassesDataContext/User/User_userActionBuy" />
+      <nodes>
+        <classShapeMoniker Id="65d6bcd4-4099-428f-ab90-950d8a0b4b20" />
+        <classShapeMoniker Id="14670f01-b650-4a79-b572-4bd08d00887d" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(6.4062525 : 2.27089680989583); (6.4062525 : 3)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/DataClassesDataContext/Drink/Drink_userActionBuy" />
+      <nodes>
+        <classShapeMoniker Id="c8f63c0e-fbb8-49a7-a6fa-73a17bf10803" />
+        <classShapeMoniker Id="14670f01-b650-4a79-b572-4bd08d00887d" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Class="DataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="" Member="Users">
+    <Type Name="User">
+      <Column Name="ID" Type="System.Int64" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" CanBeNull="false" />
+      <Column Name="Balance" Type="System.Double" CanBeNull="false" />
+      <Column Name="Points" Type="System.Int64" CanBeNull="false" />
+      <Column Name="Image" Type="System.String" CanBeNull="true" />
+      <Column Name="EntryDate" Type="System.DateTime" CanBeNull="false" />
+      <Association Name="User_userActionBuy" Member="userActionBuys" ThisKey="ID" OtherKey="UserID" Type="userActionBuy" />
+      <Association Name="User_userActionPay" Member="userActionPays" ThisKey="ID" OtherKey="UserID" Type="userActionPay" />
+    </Type>
+  </Table>
+  <Table Name="" Member="Drinks">
+    <Type Name="Drink">
+      <Column Name="ID" Type="System.Int64" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" CanBeNull="false" />
+      <Column Name="Price" Storage="_Balance" Type="System.Double" CanBeNull="false" />
+      <Column Name="Points" Type="System.Int64" CanBeNull="false" />
+      <Column Name="Image" Type="System.String" CanBeNull="true" />
+      <Association Name="Drink_userActionBuy" Member="userActionBuys" ThisKey="ID" OtherKey="DrinkID" Type="userActionBuy" />
+    </Type>
+  </Table>
+  <Table Name="" Member="userActionBuys">
+    <Type Name="userActionBuy">
+      <Column Name="ID" Type="System.Int64" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Int64" CanBeNull="false" />
+      <Column Name="DrinkID" Type="System.Int64" CanBeNull="false" />
+      <Column Name="PurchaseDate" Type="System.DateTime" CanBeNull="false" />
+      <Column Name="IsProcessed" Type="System.Boolean" CanBeNull="false" />
+      <Association Name="User_userActionBuy" Member="User" ThisKey="UserID" OtherKey="ID" Type="User" IsForeignKey="true" />
+      <Association Name="Drink_userActionBuy" Member="Drink" ThisKey="DrinkID" OtherKey="ID" Type="Drink" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="userActionPays">
+    <Type Name="userActionPay">
+      <Column Name="ID" Type="System.Int64" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Int64" CanBeNull="false" />
+      <Column Name="Sum" Type="System.Double" CanBeNull="false" />
+      <Column Name="PaymentDate" Type="System.DateTime" CanBeNull="false" />
+      <Column Name="IsProcessed" Type="System.Boolean" CanBeNull="false" />
+      <Association Name="User_userActionPay" Member="User" ThisKey="UserID" OtherKey="ID" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

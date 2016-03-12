@@ -1,0 +1,123 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="RaumKasse.MainWindow"
+        Title="RaumKasse" Width="1464" Height="694" WindowState="Maximized" Icon="logo.ico">
+    <Window.Resources>
+        <DataTemplate x:Key="ListDataTemplate">
+            <StackPanel Orientation="Horizontal" Height="Auto" Width="Auto">
+                <Image Width="75" Height="75" Source="{Binding Image}" Margin="0,0,10,3" Stretch="UniformToFill"/>
+                <StackPanel Width="Auto">
+                    <TextBlock TextWrapping="Wrap" Text="{Binding Name}" FontSize="24"/>
+                    <TextBlock TextWrapping="Wrap" Foreground="{Binding Foreground}" Text="{Binding Amount}" FontFamily="Segoe WP SemiLight" FontSize="16"/>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ListBox x:Name="UserListBox" ItemsSource="{Binding UserList}"
+            HorizontalAlignment="Left" Margin="10,201,0,10" Width="300" ItemTemplate="{DynamicResource ListDataTemplate}"/>
+        <Border Margin="10,10,10,0" BorderThickness="1" BorderBrush="#FFABADB3" VerticalAlignment="Top">
+            <StackPanel Orientation="Horizontal">
+                <Image Width="150" Height="150" Margin="6,3,10,3" Source="{Binding SelectedUser.Image}" Stretch="UniformToFill"/>
+                <StackPanel Width="436">
+                    <TextBlock TextWrapping="Wrap" Text="{Binding SelectedUser.Name}" FontSize="36"/>
+                    <TextBlock TextWrapping="Wrap" Foreground="{Binding SelectedUser.Foreground}" Text="{Binding SelectedUser.Amount}" FontFamily="Segoe UI Semilight" FontSize="16"/>
+                    <TextBlock TextWrapping="Wrap" Text="{Binding SelectedUser.Rank}" FontFamily="Segoe UI Semilight" FontSize="16"/>
+                    <StackPanel Height="49" Orientation="Horizontal" Margin="0,12,0,0">
+                        <TextBox x:Name="TxtPay" TextWrapping="Wrap" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" ToolTip="Format: 0,##"/>
+                        <Button x:Name="BtnPay" Content="Bezahlen" Click="BtnPay_Click" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="12,2,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+                <Image HorizontalAlignment="Left" Source="{Binding SelectedDrink.Image}" Width="150" Height="150" Margin="6,3,10,3" Stretch="UniformToFill" />
+                <StackPanel Margin="6,0,0,0">
+                    <TextBlock TextWrapping="Wrap" Text="{Binding SelectedDrink.Name}" FontSize="36"/>
+                    <TextBlock TextWrapping="Wrap" Text="{Binding SelectedDrink.Amount}" FontFamily="Segoe UI Semilight" FontSize="16"/>
+                    <TextBlock TextWrapping="Wrap" Text="{Binding SelectedDrink.Rank}" FontFamily="Segoe UI Semilight" FontSize="16"/>
+                    <Button x:Name="BtnBuy" Content="Kaufen" Click="BtnBuy_Click" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Margin="0,12,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <ListBox x:Name="DrinkListBox" ItemsSource="{Binding DrinkList}"
+            HorizontalAlignment="Left" Margin="315,201,0,10" Width="298" ItemTemplate="{DynamicResource ListDataTemplate}"/>
+        <TabControl Margin="618,173,10,10">
+            <TabItem Header="Statistik" FontSize="16">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <chartingToolkit:Chart x:Name="DrinkPieChart" Title="Getränkeranking (Top 5/30 Tage)" BorderBrush="#FFABADB3" LegendTitle="Getränk" Height="250" VerticalAlignment="Top" HorizontalAlignment="Center" Width="500" BorderThickness="0,0,0,1">
+                            <chartingToolkit:PieSeries DependentValuePath="Points" 
+                        		IndependentValuePath="Name" ItemsSource="{Binding DrinkRankData}" 
+                        		IsSelectionEnabled="True" />
+                        </chartingToolkit:Chart>
+                        <chartingToolkit:Chart x:Name="UserColumnChart" Title="Topscorer (Top 10/Jahr)" BorderBrush="#FFABADB3" Height="250" VerticalAlignment="Top" HorizontalAlignment="Center" Width="500" BorderThickness="0,0,0,1">
+                            <chartingToolkit:ColumnSeries DependentValuePath="Points" 
+                				IndependentValuePath="Name" ItemsSource="{Binding UserRankData}" 
+                				IsSelectionEnabled="True" Title="Punkte"/>
+                        </chartingToolkit:Chart>
+                        <chartingToolkit:Chart x:Name="UserDebtChart" Title="Schuldenranking (Top 5/Aktuell)" BorderBrush="#FFABADB3" Height="250" VerticalAlignment="Top" HorizontalAlignment="Center" Width="500" BorderThickness="0,0,0,1">
+                            <chartingToolkit:ColumnSeries DependentValuePath="Balance" 
+                				IndependentValuePath="Name" ItemsSource="{Binding UserDeptData}" 
+                				IsSelectionEnabled="True" Title="Kontostand (€)"/>
+                        </chartingToolkit:Chart>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Verwaltung" FontSize="16">
+                <Grid>
+                    <TextBlock TextWrapping="Wrap" FontSize="24" Margin="10,10,0,405" HorizontalAlignment="Left" Width="74"><Run Text="Daten"/></TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="10,47,10,0" Height="48" VerticalAlignment="Top">
+                        <Image Source="images/control/User48.png" Width="48" Height="48" HorizontalAlignment="Left" ToolTip="Benutzer" />
+                        <Button x:Name="BtnAddUser" Margin="6,0,0,0" Width="30" Height="30" ToolTip="Hinzufügen" >
+                            <Image Width="24" Height="24" Source="images/control/Add24.png" />
+                        </Button>
+                        <Button x:Name="BtnEditUser" Margin="6,9,0,9" Width="30" Height="30" ToolTip="Bearbeiten" >
+                            <Image Width="24" Height="24" Source="images/control/Edit24.png" />
+                        </Button>
+                        <Button x:Name="BtnDelUser" Margin="6,9,0,9" Width="30" Height="30" ToolTip="Löschen" >
+                            <Image Width="24" Height="24" Source="images/control/Delete24.png" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="10,100,10,0" Height="48" VerticalAlignment="Top">
+                        <Image Source="images/control/Shoppingcart48.png" Width="48" Height="48" HorizontalAlignment="Left" ToolTip="Getränke" />
+                        <Button x:Name="BtnAddDrink" Margin="6,9,0,9" Width="30" Height="30" ToolTip="Hinzufügen" >
+                            <Image Width="24" Height="24" Source="images/control/Add24.png" />
+                        </Button>
+                        <Button x:Name="BtnEditDrink" Margin="6,9,0,9" Width="30" Height="30" ToolTip="Bearbeiten" >
+                            <Image Width="24" Height="24" Source="images/control/Edit24.png" />
+                        </Button>
+                        <Button x:Name="BtnDelDrink" Margin="6,9,0,9" Width="30" Height="30" ToolTip="Löschen" >
+                            <Image Width="24" Height="24" Source="images/control/Delete24.png" />
+                        </Button>
+                    </StackPanel>
+                    <ListBox x:Name="LogListBox" Margin="194,47,10,10" BorderThickness="1,0,0,0" ItemsSource="{Binding LogList}" ItemTemplate="{DynamicResource LogTemplate}">
+                        <ListBox.Resources>
+                            <DataTemplate x:Key="LogTemplate">
+                                <StackPanel Orientation="Vertical" Height="Auto" Width="Auto">
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding Message}" FontSize="16" Width="Auto" FontFamily="Segoe UI Semilight" HorizontalAlignment="Left" Margin="0,0,20,0"/>
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding Date}" FontSize="10" Width="Auto" FontFamily="Segoe UI Semilight"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.Resources>
+
+                    </ListBox>
+                    <TextBlock TextWrapping="Wrap" FontSize="24" Margin="194,10,0,405" HorizontalAlignment="Left" Width="48"><Run Text="Log"/></TextBlock>
+                    <Button x:Name="BtnDelUserAction" ToolTip="Aktion rückgängig machen" Margin="0,12,10,0" HorizontalAlignment="Right" Width="30" Height="30" VerticalAlignment="Top" >
+                        <Image Width="24" Height="24" Source="images/control/File_delete24.png" />
+                    </Button>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Border BorderBrush="#FFABADB3" BorderThickness="1" HorizontalAlignment="Left" Height="23" Margin="10,173,0,0" VerticalAlignment="Top" Width="300">
+            <Image HorizontalAlignment="Left" Width="20" Source="images/control/Search24.png" Height="20" VerticalAlignment="Top" Opacity="0.25" Margin="2,1,0,0"/>
+        </Border>
+        <Border BorderBrush="#FFABADB3" BorderThickness="1" HorizontalAlignment="Left" Height="23" Margin="315,173,0,0" VerticalAlignment="Top" Width="298">
+            <Image HorizontalAlignment="Left" Width="20" Source="images/control/Search24.png" Height="20" VerticalAlignment="Top" Opacity="0.25" Margin="2,1,0,0"/>
+        </Border>
+        <TextBox x:Name="DrinkSearch" HorizontalAlignment="Left" Margin="341,174,0,0" TextWrapping="Wrap" Width="271" Height="21" VerticalAlignment="Top" BorderThickness="1,0,0,0" SelectionBrush="#FFABADB3" Foreground="#FFABADB3"/>
+        <TextBox x:Name="UserSearch" HorizontalAlignment="Left" Margin="36,174,0,0" TextWrapping="Wrap" Width="273" Height="21" VerticalAlignment="Top" BorderThickness="1,0,0,0" Foreground="#FFABADB3" SelectionBrush="#FFABADB3"/>
+    </Grid>
+</Window>
