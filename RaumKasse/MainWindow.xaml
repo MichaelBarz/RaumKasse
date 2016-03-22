@@ -58,7 +58,7 @@
                 				IndependentValuePath="Name" ItemsSource="{Binding UserRankData}" 
                 				IsSelectionEnabled="True" Title="Punkte"/>
                         </chartingToolkit:Chart>
-                        <chartingToolkit:Chart x:Name="UserDebtChart" Title="Schuldenranking (Top 5/Aktuell)" BorderBrush="#FFABADB3" Height="250" VerticalAlignment="Top" HorizontalAlignment="Center" Width="500" BorderThickness="0,0,0,1">
+                        <chartingToolkit:Chart x:Name="UserDebtChart" Title="Schuldenranking (Top 10/Aktuell)" BorderBrush="#FFABADB3" Height="250" VerticalAlignment="Top" HorizontalAlignment="Center" Width="500" BorderThickness="0,0,0,1">
                             <chartingToolkit:ColumnSeries DependentValuePath="Balance" 
                 				IndependentValuePath="Name" ItemsSource="{Binding UserDeptData}" 
                 				IsSelectionEnabled="True" Title="Kontostand (€)"/>

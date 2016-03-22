@@ -71,6 +71,14 @@ namespace RaumKasse.viewModels
             // Create Backup
             try
             {
+                AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+                var user = WindowsIdentity.GetCurrent();
+                var groupNames = from id in user.Groups
+                                 select id.Translate(typeof(NTAccount)).Value;
+                foreach (var s in groupNames)
+                {
+                    Console.WriteLine(s);
+                }
                 var dbPath = Path.Combine(new String[] { Directory.GetCurrentDirectory(), "Data.sdf" });
                 var dir = Path.Combine(new String[] { Directory.GetCurrentDirectory(), "AutoBackup" });
                 if (!Directory.Exists(dir.ToString()))
@@ -148,7 +156,7 @@ namespace RaumKasse.viewModels
 
         public void loadLog()
         {
-            var refDate = DateTime.Now.AddDays(-7);
+            var refDate = DateTime.Now.AddDays(-14);
             var purchases = ToObservableCollection<ILoggable>(from p in db.Purchases where p.PurchaseDate >= refDate orderby p.PurchaseDate descending select p);
             var payments = ToObservableCollection<ILoggable>(from p in db.Payments where p.PaymentDate >= refDate orderby p.PaymentDate descending select p);
 
@@ -174,7 +182,7 @@ namespace RaumKasse.viewModels
             NotifyPropertyChanged("UserRankData");
 
             // load user dept data
-            UserDeptData = ToObservableCollection<User>((from u in db.Users where u.Balance < 0 orderby u.Balance ascending select u).Take(5));
+            UserDeptData = ToObservableCollection<User>((from u in db.Users where u.Balance < 0 orderby u.Balance ascending select u).Take(10));
             NotifyPropertyChanged("UserDeptData");
 
             // gather drink rank data
@@ -239,7 +247,7 @@ namespace RaumKasse.viewModels
             }
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "VORDEFINIERT\\Administratoren")]
         public void deleteUserWithPermission()
         {
             // TODO: ask --> delete all dependencies (on delete ... cascade)
@@ -265,6 +273,7 @@ namespace RaumKasse.viewModels
                 }
                 SelectedUser = dummyUser;
                 loadUsers();
+                loadLog();
             }
             else
                 MessageBox.Show("Du musst einen Benutzer wählen!", "Ooops!", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -319,7 +328,7 @@ namespace RaumKasse.viewModels
             }
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "VORDEFINIERT\\Administratoren")]
         internal void deleteDrinkWithPermission()
         {
             // TODO: ask --> delete all dependencies (on delete ... cascade)
@@ -333,7 +342,6 @@ namespace RaumKasse.viewModels
                 try
                 {
                     db.Purchases.DeleteAllOnSubmit<userActionBuy>(from p in db.Purchases where p.Drink == SelectedDrink select p);
-                    db.Payments.DeleteAllOnSubmit<userActionPay>(from p in db.Payments where p.Drink == SelectedDrink select p);
                     db.Drinks.DeleteOnSubmit(SelectedDrink);
                     db.SubmitChanges();
                 }
@@ -345,6 +353,7 @@ namespace RaumKasse.viewModels
                 }
                 SelectedDrink = dummyDrink;
                 loadDrinks();
+                loadLog();
             }
             else
                 MessageBox.Show("Du musst ein Getränk wählen!", "Ooops!", MessageBoxButton.OK, MessageBoxImage.Information);
