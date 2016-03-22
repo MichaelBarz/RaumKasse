@@ -5,6 +5,9 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security;
+using System.Security.Permissions;
+using System.Security.Principal;
 using System.Windows;
 
 namespace RaumKasse.viewModels
@@ -224,7 +227,20 @@ namespace RaumKasse.viewModels
                 MessageBox.Show("Du musst einen Benutzer wählen!", "Ooops!", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        public void deleteUser()
+        internal void deleteUser()
+        {
+            try
+            {
+                deleteUserWithPermission();
+            }
+            catch (SecurityException)
+            {
+                MessageBox.Show("Du benötigst Admin-Rechte für diese Aktion", "Nicht genügend Rechte.", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
+        public void deleteUserWithPermission()
         {
             // TODO: ask --> delete all dependencies (on delete ... cascade)
             if (SelectedUser != null && SelectedUser != dummyUser)
@@ -233,9 +249,11 @@ namespace RaumKasse.viewModels
                         "Löschen", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
                 if (res != MessageBoxResult.Yes)
                     return;
-
+                
                 try
                 {
+                    db.Purchases.DeleteAllOnSubmit<userActionBuy>(from p in db.Purchases where p.User == SelectedUser select p);
+                    db.Payments.DeleteAllOnSubmit<userActionPay>(from p in db.Payments where p.User == SelectedUser select p);
                     db.Users.DeleteOnSubmit(SelectedUser);
                     db.SubmitChanges();
                 }
@@ -291,6 +309,19 @@ namespace RaumKasse.viewModels
 
         internal void deleteDrink()
         {
+            try
+            {
+                deleteDrinkWithPermission();
+            }
+            catch (SecurityException)
+            {
+                MessageBox.Show("Du benötigst Admin-Rechte für diese Aktion", "Nicht genügend Rechte.", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        [PrincipalPermission(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
+        internal void deleteDrinkWithPermission()
+        {
             // TODO: ask --> delete all dependencies (on delete ... cascade)
             if (SelectedDrink != null && SelectedDrink != dummyDrink)
             {
@@ -298,9 +329,11 @@ namespace RaumKasse.viewModels
                         "Löschen", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
                 if (res != MessageBoxResult.Yes)
                     return;
-
+                
                 try
                 {
+                    db.Purchases.DeleteAllOnSubmit<userActionBuy>(from p in db.Purchases where p.Drink == SelectedDrink select p);
+                    db.Payments.DeleteAllOnSubmit<userActionPay>(from p in db.Payments where p.Drink == SelectedDrink select p);
                     db.Drinks.DeleteOnSubmit(SelectedDrink);
                     db.SubmitChanges();
                 }
@@ -421,6 +454,13 @@ namespace RaumKasse.viewModels
             db.SubmitChanges();
             loadUsers();
             loadLog();
+        }
+
+        internal bool IsAdministrator()
+        {
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
     }
 }
